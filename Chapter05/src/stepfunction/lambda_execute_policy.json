@@ -1,0 +1,25 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "redshift:GetClusterCredentials",
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "redshift-data:ExecuteStatement",
+                "redshift-data:ListStatements",
+                "redshift-data:GetStatementResult",
+                "redshift-data:DescribeStatement"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        }
+    ]
+}
