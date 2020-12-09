@@ -1,8 +1,8 @@
 {
   "input": {
-    "redshift_cluster_id": "democluster-71f3476d",
-    "redshift_database": "dev",
-    "redshift_user": "demo",
+    "redshift_cluster_id": "[Your Amazon Redshift cluster id]",
+    "redshift_database": "[Database name]",
+    "redshift_user": "[Username]",
     "sql_text": "select sysdate"
   }
 }
