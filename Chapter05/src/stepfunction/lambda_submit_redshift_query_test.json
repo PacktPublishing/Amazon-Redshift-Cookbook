@@ -1,0 +1,8 @@
+{
+  "input": {
+    "redshift_cluster_id": "democluster-71f3476d",
+    "redshift_database": "dev",
+    "redshift_user": "demo",
+    "sql_text": "select sysdate"
+  }
+}
