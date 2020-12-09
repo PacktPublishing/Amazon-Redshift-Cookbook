@@ -1,0 +1,9 @@
+{
+  "input": {
+    "redshift_cluster_id": "[Your Amazon Redshift cluster id]",
+    "redshift_database": "[Database name]",
+    "redshift_user": "[Username]",
+    "sql_text": "select sysdate"
+  },
+  "wait_time": "3"
+}
