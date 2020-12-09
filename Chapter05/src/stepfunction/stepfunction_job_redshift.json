@@ -1,5 +1,5 @@
 {
-  "Comment": "An example of the Amazon States Language that runs an AWS Batch job and monitors the job until it completes.",
+  "Comment": "An example of the Amazon States Language that runs an AWS Lambda that submits a Redshift query and monitors the job until it completes.",
   "StartAt": "Submit Job",
   "States": {
     "Submit Job": {
