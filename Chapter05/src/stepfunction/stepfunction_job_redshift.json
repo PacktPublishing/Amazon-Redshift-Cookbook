@@ -1,0 +1,51 @@
+{
+  "Comment": "An example of the Amazon States Language that runs an AWS Batch job and monitors the job until it completes.",
+  "StartAt": "Submit Job",
+  "States": {
+    "Submit Job": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:987719398599:function:StepFunctionsSample-JobStatusPol-SubmitJobFunction-1443W54Z15C16",
+      "ResultPath": "$.guid",
+      "Next": "Wait X Seconds"
+    },
+    "Wait X Seconds": {
+      "Type": "Wait",
+      "SecondsPath": "$.wait_time",
+      "Next": "Get Job Status"
+    },
+    "Get Job Status": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:[Your AWS Region]:[Your AWS Account Number]:function:[AWS Lambda Function Name for submit_redshift_query]",
+      "Next": "Job Complete?",
+      "InputPath": "$.guid",
+      "ResultPath": "$.status"
+    },
+    "Job Complete?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.status",
+          "StringEquals": "FAILED",
+          "Next": "Job Failed"
+        },
+        {
+          "Variable": "$.status",
+          "StringEquals": "FINISHED",
+          "Next": "Get Final Job Status"
+        }
+      ],
+      "Default": "Wait X Seconds"
+    },
+    "Job Failed": {
+      "Type": "Fail",
+      "Cause": "Job Failed",
+      "Error": "DescribeJob returned FAILED"
+    },
+    "Get Final Job Status": {
+      "Type": "Task",
+      "Resource": "Resource": "arn:aws:lambda:[Your AWS Region]:[Your AWS Account Number]:function:[AWS Lambda Function Name for poll_redshift_query]",
+      "InputPath": "$.guid",
+      "End": true
+    }
+  }
+}
