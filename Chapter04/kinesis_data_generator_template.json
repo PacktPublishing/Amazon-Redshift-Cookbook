@@ -1,0 +1,50 @@
+{
+    "marketplace": "{{random.arrayElement(
+        ["US","UK","JP"]
+    )}}",
+    "customer_id": {{random.number(
+        {
+            "min":50059103,
+            "max":60059103
+        }
+    )}},
+    "review_id": "{{internet.password}}",
+    "product_id" : "{{random.arrayElement(
+        ["B00006A7SB", "B00006WMNB", "B00006AMSP", "B0000DF022", "B0001FAX2E", "B00021HGA4", "B000651M24", "B0006PWUIY", "B0002GTFNU", "B0002TOZ1O", "B0001LVAP2", "B00064VJP0", "B0001F321S", "B0006H0PRK", "B000CQY8LO", "B00065TD6Q", "B0006TI1A6", "B0002OQ86O", "B000IZT7DI", "B000HB31YE"]
+    )}}",    
+    "product_parent": {{random.number(
+        {
+            "min":135012731,
+            "max":235012731
+        }
+    )}},
+    "product_title": "{{commerce.productName}}",
+    "star_rating": {{random.number(
+        {
+            "min":1,
+            "max":5
+        }
+    )}},
+    "helpful_votes": {{random.number(
+        {
+            "min":1,
+            "max":99
+        }
+    )}},
+    "total_votes": {{random.number(
+        {
+            "min":1,
+            "max":99
+        }
+    )}},
+    "vine": "{{random.arrayElement(
+        ["Y","N"]
+    )}}",
+    "verified_purchase": "{{random.arrayElement(
+        ["Y","N"]
+    )}}",
+    "review_headline": "{{commerce.productAdjective}}",
+    "review_body": "{{commerce.productAdjective}}",
+    "review_date": "{{date.now("YYYY-MM-DD")}}",
+    "year":{{date.now("YYYY")}}
+}
