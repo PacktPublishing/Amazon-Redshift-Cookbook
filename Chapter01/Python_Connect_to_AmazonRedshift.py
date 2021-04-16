@@ -8,7 +8,7 @@ secret_arn="arn:aws:secretsmanager:us-west-2:123456789012:secret:aes128-1a2b3c"
 def get_client(service, region=aws_region_name):
     import botocore.session as bc
     session = bc.get_session()
-    s = boto3.Session(botocore_session=session, region_name=region)
+    s = boto3.Session(botocore_session=session, aws_region_name)
     return s.client(service)
 rsd = get_client('redshift-data')
 resp = rsd.execute_statement(
