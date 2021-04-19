@@ -1,0 +1,109 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  SimpleStackUidFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile: |
+          import hashlib
+          import cfnresponse
+
+          def get_md5(account: str, region: str, stack: str, length: int = 8) -> str:
+            md5 = hashlib.new('md5')
+            md5.update(account.encode('utf-8'))
+            md5.update(region.encode('utf-8'))
+            md5.update(stack.encode('utf-8'))
+            return md5.hexdigest()[:length]
+
+          def lambda_handler(event: dict, context) -> None:
+            responseData = {}
+            if event['RequestType'] == 'Create':
+              account = event['ResourceProperties']['AccountId']
+              region = event['ResourceProperties']['Region']
+              stack = event['StackId']
+              md5 = get_md5(account=account, region=region, stack=stack)
+              responseData['upper'] = md5.upper()
+              responseData['lower'] = md5.lower()
+            else: # delete / update
+              rs = event['PhysicalResourceId']
+              responseData['upper'] = rs.upper()
+              responseData['lower'] = rs.lower()
+            cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData, responseData['lower'], noEcho=True)
+      Handler: "index.lambda_handler"
+      Timeout: 30
+      Role:
+        Fn::GetAtt:
+          - SimpleStackUidFunctionRole
+          - Arn
+      Runtime: python3.7
+  SimpleStackUid:
+    Type: Custom::RandomString
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - SimpleStackUidFunction
+          - Arn
+      Region: AWS::Region
+      AccountId: AWS::AccountId
+  SimpleStackUidFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: "lambda-logs"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - "arn:aws:logs:*:*:*"
+  RedshiftCookBookBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName:
+        Fn::Sub: "redshiftcookbook-${SimpleStackUid}"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+  Chapter1IAMPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: Chapter1IAMPolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:*
+          - redshift:*
+          - redshift-data:*
+          - secretsmanager:*
+          - cloudformation:*
+          Resource:
+          - '*'
+        - Effect: Allow
+          Action:
+          - s3:*
+          Resource:
+          - !Sub "arn:aws:s3:::${RedshiftCookBookBucket}"         
+Outputs:
+  RedshiftCookBookBucket:
+    Description: "S3 bucket name for cookbook CloudFormation template"
+    Value: !Ref RedshiftCookBookBucket
+  Chapter1IAMPolicy:
+    Description: "IAM policy to allow in redshift, s3, secrets manager access"
+    Value: !Ref Chapter1IAMPolicy
