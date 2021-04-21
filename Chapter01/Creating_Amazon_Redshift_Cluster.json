@@ -28,6 +28,7 @@
             "AllowedValues": [
                 "ra3.16xlarge",
                 "ra3.4xlarge",
+                "ra3.xlplus",
                 "dc2.large",
                 "dc2.8xlarge"
             ]
