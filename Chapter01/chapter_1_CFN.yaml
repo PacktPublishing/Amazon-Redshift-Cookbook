@@ -93,6 +93,8 @@ Resources:
           - redshift-data:*
           - secretsmanager:*
           - cloudformation:*
+          - sagemaker:*
+          - ec2:*
           Resource:
           - '*'
         - Effect: Allow
