@@ -29,7 +29,7 @@ table = dynamodb.create_table(
 
 table.meta.client.get_waiter('table_exists').wait(TableName=tableName)
 
-partfile= s3_client.get_object(Bucket='[MYS3BUCKET]', Key='[PREFIX]/dynamodb-data/part.tbl')
+partfile= s3_client.get_object(Bucket='packt-redshift-cookbook', Key='dynamo/part.tbl')
 recList = partfile['Body'].read().decode("utf-8").split('\n')
  
 line_count = 0
