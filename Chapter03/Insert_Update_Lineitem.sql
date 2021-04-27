@@ -29,7 +29,7 @@ CREATE TABLE stg_lineitem
 BACKUP NO sortkey (RECEIPTDATE);                                                                                                                                                                                                             s_name varchar(25)) BACKUP NO sortkey (receiptdate);
 
 COPY stg_lineitem
-FROM 's3://hfworkshop/packt/etl/lineitem/shipdate_dt=2020-08-15/' iam_role 'arn:aws:iam::987719398599:role/RedshiftCopyUnload' region 'us-east-1' csv gzip compupdate preset;
+FROM 's3://packt-redshift-cookbook/etl/lineitem/shipdate_dt=2020-08-15/' iam_role '[Your_Redshift_IAM_Role]' region 'us-east-1' csv gzip compupdate preset;
 
 
 SELECT *
