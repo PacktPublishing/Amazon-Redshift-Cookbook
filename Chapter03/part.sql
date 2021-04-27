@@ -60,6 +60,4 @@ WHERE part.p_name IS NULL ;
 
 --  commit and End transaction
 
-COMMIT;
-
 END TRANSACTION;
