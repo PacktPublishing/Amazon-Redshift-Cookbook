@@ -92,3 +92,5 @@ CREATE TABLE dwdate
   d_lastdayinmonthfl   VARCHAR(1) NOT NULL,
   d_holidayfl          VARCHAR(1) NOT NULL,
   d_weekdayfl          VARCHAR(1) NOT NULL
+)
+diststyle ALL sortkey (d_datekey);
