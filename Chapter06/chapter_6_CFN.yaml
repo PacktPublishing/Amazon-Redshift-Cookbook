@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Stack for Amazon Redshift cookbook Chapter6
+Parameters:
+  CookbookIAMUserName:
+    Type: String
+    Description: cookbook iam user name
+    Default: ''
+  CookbookBucketName:
+    Type: String
+    Description: >-
+      Session name must satisfy regular expression pattern
+      ^[a-zA-Z0-9](-*[a-zA-Z0-9])*
+    Default: ''
+  RedshiftClusterRole:
+    Type: String
+    Description: redshift cluster role name
+    Default: ''
+Resources:
+            
+  Chapter6IAMPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      ManagedPolicyName: Chapter6IAMPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'redshift:*'
+              - 'redshift-data:*'
+              - 'secretsmanager:*'
+              - 'logs:*'
+              - 'ec2:*'
+              - 'sns:*'
+              - 'cloudwatch:*'
+              - 'iam:*'
+              - 'cloudformation:*'
+              - 'kms:*'
+              - 'glue:*'
+              - s3:ListAllMyBuckets
+              - s3:GetBucketLocation               
+            Resource:
+              - '*'
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource:
+              - !Sub "arn:aws:s3:::${CookbookBucketName}"
+              - !Sub "arn:aws:s3:::${CookbookBucketName}/*"               
+      Users:
+        - !Ref CookbookIAMUserName
+  Chapter6RedshiftPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:*'
+            Resource:
+              - !Sub 'arn:aws:s3:::${CookbookBucketName}'
+              - !Sub 'arn:aws:s3:::${CookbookBucketName}/*'
+          - Effect: Allow
+            Action:
+              - glue:*  
+            Resource:
+              - '*'              
+      Roles:
+        - !Ref RedshiftClusterRole
+Outputs:
+  Chapter6IAMPolicy:
+    Description: IAM policy access for chapter 6
+    Value: !Ref Chapter6IAMPolicy
+  Chapter6RedshiftPolicy:
+    Description: Chapter6 redshift policy
+    Value: !Ref Chapter6RedshiftPolicy
