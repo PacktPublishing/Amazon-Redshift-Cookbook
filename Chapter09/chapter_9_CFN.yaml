@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Stack for Amazon Redshift cookbook Chapter9
+Parameters:
+  CookbookIAMUserName:
+    Type: String
+    Description: cookbook iam user name
+    Default: ''
+  CookbookBucketName:
+    Type: String
+    Description: >-
+      Session name must satisfy regular expression pattern
+      ^[a-zA-Z0-9](-*[a-zA-Z0-9])*
+    Default: ''
+  RedshiftClusterRole:
+    Type: String
+    Description: redshift cluster role name
+    Default: ''
+Resources:
+  Chapter9GlueServiceRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Description: IAM Role for Redshift scheduler
+      RoleName: Chapter9GlueServiceRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "glue.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceNotebookRole
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+        - arn:aws:iam::aws:policy/AmazonRDSFullAccess
+
+            
+  Chapter9IAMPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      ManagedPolicyName: Chapter9IAMPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'redshift:*'
+              - 'redshift-data:*'
+              - 'secretsmanager:*'
+              - 'logs:*'
+              - 'sns:*'
+              - 'cloudwatch:*'
+              - 'cloudformation:*'
+              - 'kms:*'
+              - 'glue:*'
+              - 'ec2:*'
+              - 'iam:*'
+              - s3:ListAllMyBuckets
+              - s3:GetBucketLocation  
+              - 'rds:*'
+              - cloudtrail:DescribeTrails
+              - 'lakeformation:*'
+              - 'cfn:*'
+            Resource:
+              - '*'
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource:
+              - !Sub "arn:aws:s3:::${CookbookBucketName}"
+              - !Sub "arn:aws:s3:::${CookbookBucketName}/*"               
+      Users:
+        - !Ref CookbookIAMUserName
+  Chapter9RedshiftPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:*'
+            Resource:
+              - !Sub 'arn:aws:s3:::${CookbookBucketName}'
+              - !Sub 'arn:aws:s3:::${CookbookBucketName}/*'
+          - Effect: Allow
+            Action:
+              - glue:*  
+            Resource:
+              - '*'    
+          - Effect: Allow
+            Action:
+              - secretsmanager:*
+            Resource:
+              - '*'                 
+      Roles:
+        - !Ref RedshiftClusterRole
+Outputs:
+  Chapter9IAMPolicy:
+    Description: IAM policy access for chapter 9
+    Value: !Ref Chapter9IAMPolicy
+  Chapter9RedshiftPolicy:
+    Description: Chapter9 redshift policy
+    Value: !Ref Chapter9RedshiftPolicy
+  Chapter9GlueServiceRole:
+    Description: Chapter9 glue service role
+    Value: !Ref Chapter9RedshiftPolicy    
+
+           
