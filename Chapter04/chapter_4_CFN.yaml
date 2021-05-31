@@ -1,0 +1,137 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: "Stack for Amazon Redshift cookbook chapter4"
+Parameters:
+  CookbookIAMUserName:
+    Type: String
+    Description: cookbook iam user name
+    Default: ""  
+  CookbookBucketName:
+    Type: String
+    Description: Session name must satisfy regular expression pattern ^[a-zA-Z0-9](-*[a-zA-Z0-9])*
+    Default: ""    
+  RedshiftClusterRole:
+    Type: String
+    Description: redshift cluster role name
+    Default: ""   
+Resources:
+  Chapter4IAMPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: Chapter4IAMPolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - redshift:*
+          - redshift-data:*  
+          - dms:*
+          - rds:*
+          - glue:*
+          - kinesis:*
+          - firehose:*
+          - logs:*
+          - ec2:*    
+          - s3:ListAllMyBuckets
+          - s3:GetBucketLocation  
+          - cloudformation:*
+          - secretmanager:*
+          - cognito-identity:*          
+          Resource:
+          - '*'
+        - Effect: Allow
+          Action:
+          - s3:*
+          Resource:
+          - !Sub "arn:aws:s3:::${CookbookBucketName}"
+          - !Sub "arn:aws:s3:::${CookbookBucketName}/*"        
+      Users: 
+          - !Ref CookbookIAMUserName
+
+  Chapter4GlueCrawlerRole:  
+    Type: AWS::IAM::Role
+    DeletionPolicy: Delete
+    Properties:
+      RoleName: Chapter4GlueCrawlerRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "glue.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: Chapter4GlueCrawlerS3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                Effect: Allow
+                Resource:
+                  - !Sub "arn:aws:s3:::${CookbookBucketName}"
+                  - !Sub "arn:aws:s3:::${CookbookBucketName}/*" 
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+         
+
+  Chapter4RedshiftPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:      
+        - Effect: Allow
+          Action:
+          - dynamodb:scan
+          - dynamodb:Describe*
+          Resource: 
+          - '*'
+        - Effect: Allow
+          Action:
+          - s3:*
+          Resource:
+          - !Sub "arn:aws:s3:::${CookbookBucketName}"
+          - !Sub "arn:aws:s3:::${CookbookBucketName}/*"     
+        - Effect: Allow
+          Action:
+          - glue:CreateDatabase
+          - glue:DeleteDatabase
+          - glue:GetDatabase 
+          - glue:GetDatabases 
+          - glue:UpdateDatabase 
+          - glue:CreateTable 
+          - glue:DeleteTable 
+          - glue:BatchDeleteTable 
+          - glue:UpdateTable 
+          - glue:GetTable 
+          - glue:GetTables 
+          - glue:BatchCreatePartition 
+          - glue:CreatePartition 
+          - glue:DeletePartition 
+          - glue:BatchDeletePartition 
+          - glue:UpdatePartition 
+          - glue:GetPartition 
+          - glue:GetPartitions 
+          - glue:BatchGetPartition  
+          Resource: 
+          - '*'              
+      Roles: 
+          - !Ref RedshiftClusterRole               
+            
+Outputs:
+  Chapter4IAMPolicy:
+    Description: "IAM policy access for chapter 4"
+    Value: !Ref Chapter4IAMPolicy
+  Chapter4RedshiftPolicy:
+    Description: "Chapter4 redshift policy"
+    Value: !Ref Chapter4RedshiftPolicy 
+  Chapter4GlueCrawlerRole:
+    Description: "IAM role for glue crawler chapter 4"
+    Value: !GetAtt Chapter4GlueCrawlerRole.Arn
+      
