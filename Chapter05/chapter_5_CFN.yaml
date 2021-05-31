@@ -1,0 +1,116 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Stack for Amazon Redshift cookbook Chapter5
+Parameters:
+  CookbookIAMUserName:
+    Type: String
+    Description: cookbook iam user name
+    Default: ''
+  CookbookBucketName:
+    Type: String
+    Description: >-
+      Session name must satisfy regular expression pattern
+      ^[a-zA-Z0-9](-*[a-zA-Z0-9])*
+    Default: ''
+  RedshiftClusterRole:
+    Type: String
+    Description: redshift cluster role name
+    Default: ''
+Resources:
+  Chapter5RedshiftSchedulerRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      Description: IAM Role for Redshift scheduler
+      RoleName: Chapter5RedshiftSchedulerRole
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service:
+                - events.amazonaws.com
+          - Action:
+              - 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              AWS: 
+              - !Sub "arn:aws:iam::${AWS::AccountId}:user/${CookbookIAMUserName}"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonRedshiftDataFullAccess
+        - arn:aws:iam::aws:policy/AmazonEventBridgeFullAccess
+        - arn:aws:iam::aws:policy/AmazonRedshiftFullAccess
+            
+             
+  Chapter5IAMPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      ManagedPolicyName: Chapter5IAMPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'redshift:*'
+              - 'redshift-data:*'
+              - 'events:*'
+              - 'states:*'
+              - 'secretsmanager:*'
+              - 'glue:*'
+              - 'logs:*'
+              - 'ec2:*'
+              - 'lambda:*'
+              - 'sns:*'
+              - 'cloudwatch:*'
+              - 'airflow:*'
+              - iam:PassRole
+              - 'cloudformation:*'
+              - s3:ListAllMyBuckets
+              - s3:GetBucketLocation 
+            Resource:
+              - '*'
+          - Effect: Allow
+            Action: 'sts:AssumeRole'
+            Resource:
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/${Chapter5RedshiftSchedulerRole}"
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource:
+              - !Sub "arn:aws:s3:::${CookbookBucketName}"
+              - !Sub "arn:aws:s3:::${CookbookBucketName}/*"            
+      Users:
+        - !Ref CookbookIAMUserName
+  Chapter5RedshiftPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:*'
+            Resource:
+              - !Sub 'arn:aws:s3:::${CookbookBucketName}'
+              - !Sub 'arn:aws:s3:::${CookbookBucketName}/*'
+          - Effect: Allow              
+            Action:
+              - 'lambda:*'  
+            Resource:
+              - '*'      
+          - Effect: Allow
+            Action: 'sts:AssumeRole'
+            Resource:
+              - !Sub "arn:aws:iam::${AWS::AccountId}:role/${Chapter5RedshiftSchedulerRole}"
+      Roles:
+        - !Ref RedshiftClusterRole
+Outputs:
+  Chapter5IAMPolicy:
+    Description: IAM policy access for chapter 5
+    Value: !Ref Chapter5IAMPolicy
+  Chapter5RedshiftPolicy:
+    Description: Chapter5 redshift policy
+    Value: !Ref Chapter5RedshiftPolicy
+  Chapter5RedshiftSchedulerRole:
+    Description: Chapter5 redshift scheduler policy
+    Value: !GetAtt Chapter5RedshiftSchedulerRole.Arn
+       
