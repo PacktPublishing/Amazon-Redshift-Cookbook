@@ -29,7 +29,8 @@ Resources:
         - Effect: Allow
           Action:
           - redshift:*
-          - redshift-data:*          
+          - redshift-data:*   
+          - kms:*          
           Resource:
           - '*'
       Users:
