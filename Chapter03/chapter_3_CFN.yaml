@@ -25,7 +25,12 @@ Resources:
           Action:
           - emr:*
           - redshift:*
-          - redshift-data:*           
+          - redshift-data:*    
+          - kms:*
+          - dynamodb:*
+          - ec2:*     
+          - secretmanager:*  
+          - cfn:*          
           Resource:
           - '*'
       Users: 
