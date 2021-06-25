@@ -68,5 +68,5 @@ She is a cloud professional with technical expertise in data lakes and analytics
 **Thiyagarajan Arumugam**
 He is a principal big data solution architect at AWS, architecting and building solutions at scale using big data to enable data-driven decisions. Prior to AWS, Thiyagu as a data engineer built big data solutions at Amazon, operating some of the largest data warehouses and migrating to and managing them. He has worked on automated data pipelines and built data lake-based platforms to manage data at scale for the customers of his data science and business analyst teams. 
   
-**Shruti Worlikar**
+**Harshida Patel**
 She is a senior analytics specialist solution architect at AWS, enabling customers to build scalable data lake and data warehousing applications using AWS analytical services. She has presented Amazon Redshift deep-dive sessions at re:Invent. Harshida has a bachelor’s degree in electronics engineering and a master’s in electrical and telecommunication engineering. She has over 15 years of experience architecting and building end-to-end data pipelines in the data management space. In the past, Harshida has worked in the insurance and telecommunication industries.
