@@ -61,7 +61,7 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 
 * Snowflake Cookbook [[Packt]](https://www.packtpub.com/product/snowflake-cookbook/9781800560611) [[Amazon]](https://www.amazon.in/Snowflake-Cookbook-Techniques-warehousing-solutions/dp/1800560613)
 
-## Get to Know the Author
+## Get to Know the Authors
 **Shruti Worlikar**
 She is a cloud professional with technical expertise in data lakes and analytics across cloud platforms. Her background has led her to become an expert in on-premises-to-cloud migrations and building cloud-based scalable analytics applications.Her work history includes work at J.P. Morgan Chase, MicroStrategy, and Amazon Web Services (AWS). She is currently working in the role of Manager, Analytics Specialist SA at AWS, helping customers to solve real-world analytics business challenges with cloud solutions and working with service teams to deliver real value.
 
