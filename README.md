@@ -1,3 +1,7 @@
+## [Get this title for $10 on Packt's Spring Sale](https://www.packt.com/B16745?utm_source=github&utm_medium=packt-github-repo&utm_campaign=spring_10_dollar_2022)
+-----
+For a limited period, all eBooks and Videos are only $10. All the practical content you need \- by developers, for developers
+
 # Amazon Redshift Cookbook
 
 <a href="https://www.packtpub.com/in/data/amazon-redshift-cookbook"><img src="https://www.packtpub.com/media/catalog/product/cache/c2dd93b9130e9fabaf187d1326a880fc/9/7/9781800569683-original_161.jpeg" alt="Book Name" height="256px" align="right"></a>
